@@ -12,6 +12,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Menu, Send, Clock, Settings } from 'lucide-react'
+import { VNC_SERVER_URL } from './constants'
 
 export default function ChatInterface() {
   const [messages, setMessages] = useState<{ role: 'user' | 'assistant', content: string }[]>([
@@ -54,13 +55,10 @@ export default function ChatInterface() {
       {/* Center - Chat area */}
       <div className="flex-1 flex flex-col">
         <div className="flex-1 overflow-auto p-4">
-          {messages.map((message, index) => (
-            <div key={index} className={`mb-4 ${message.role === 'user' ? 'text-right' : 'text-left'}`}>
-              <div className={`inline-block p-2 rounded-lg ${message.role === 'user' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-black'}`}>
-                {message.content}
-              </div>
-            </div>
-          ))}
+          <iframe
+            src={VNC_SERVER_URL}
+            className="w-full h-full" // Use Tailwind CSS classes for width and height
+          />
         </div>
         <form onSubmit={handleSubmit} className="p-4 border-t">
           <div className="flex">
