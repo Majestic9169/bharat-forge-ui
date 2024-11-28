@@ -122,6 +122,21 @@ This is an example of how to list things you need to use the software and how to
   pnpm --version
   ```
 
+> Setup the VNC Server
+* Arch/Hyprland
+  
+  First start the VNC server. Hyprland uses the Wayland protocol so we use `wayvnc`
+  ```sh
+  wayvnc --output eDP-1 0.0.0.0 5900 -L debug trace
+  ```
+  Then use `novnc` to connect the server to a websocket
+  ```sh
+  sudo novnc --vnc localhost:5900 --listen 80
+  ```
+* Ubuntu
+  
+    set up `tigervnc` and then use `novnc` similar to above. Follow [this video](https://www.youtube.com/watch?v=fyY6ovGbTO4)
+
 ### Installation
 
 ```sh
@@ -130,6 +145,8 @@ cd bharat-forge-ui
 pnpm install
 pnpm run dev
 ```
+
+make sure your VNC server is running and connected to a websocket
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -169,11 +186,11 @@ Contributions are what make the open source community such an amazing place to l
 If you have a suggestion that would make this better, please fork the repo and create a pull request. You can also simply open an issue with the tag "enhancement".
 Don't forget to give the project a star! Thanks again!
 
-1. Fork the Project
-2. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the Branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+<!-- 1. Fork the Project -->
+1. Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+1. Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+1. Push to the Branch (`git push origin feature/AmazingFeature`)
+1. Open a Pull Request
 
 <!-- ### Top contributors: -->
 <!---->
