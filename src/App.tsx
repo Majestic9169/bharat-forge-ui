@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -13,22 +13,29 @@ import {
 } from "@/components/ui/dropdown-menu"
 import { Menu, Send, Clock, Settings } from 'lucide-react'
 import { VNC_SERVER_URL } from './constants'
+import { Task } from './types'
 
 export default function ChatInterface() {
-  const [messages, setMessages] = useState<{ role: 'user' | 'assistant', content: string }[]>([
-    { role: 'assistant', content: 'Hello! How can I assist you today?' }
-  ])
   const [input, setInput] = useState('')
+  const [tasks, setTasks] = useState<Task[]>([]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     if (input.trim()) {
-      setMessages([...messages, { role: 'user', content: input }])
+      const task: Task = {
+        command: input,
+        status: "Bot 1",
+      }
+      setTasks((prevState) => ([
+        ...prevState,
+        task,
+      ]))
       setInput('')
-      // Here you would typically send the message to your AI backend
-      // and then add the response to the messages
     }
   }
+  useEffect(() => {
+    console.log(tasks);
+  }, [tasks]);
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -47,7 +54,7 @@ export default function ChatInterface() {
         <div className="flex-1 overflow-auto p-4">
           <iframe
             src={VNC_SERVER_URL}
-            className="w-full h-full" // Use Tailwind CSS classes for width and height
+            className="w-full h-full"
           />
         </div>
         <form onSubmit={handleSubmit} className="p-4 border-t">
@@ -76,14 +83,30 @@ export default function ChatInterface() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuLabel>Bot View</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
+            <DropdownMenuItem>Bot 1</DropdownMenuItem>
+            <DropdownMenuItem>Bot 2</DropdownMenuItem>
+            <DropdownMenuItem>Bot 3</DropdownMenuItem>
+            <DropdownMenuItem>Bot 4</DropdownMenuItem>
+            <DropdownMenuItem>Bot 5</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
+
+        {/* Command History Panel */}
+        <div className="mt-4 text-white">
+          <h2 className="text-lg font-bold">Command History</h2>
+          <ul className="mt-2 space-y-2">
+            {tasks.slice().reverse().map((task, index) => (
+              <li key={index} className="flex justify-between p-2 bg-gray-700 rounded">
+                <span>{task.command}</span>
+                <span className={`font-semibold ${task.status === 'Completed' ? 'text-green-400' : task.status === 'Failed' ? 'text-red-400' : 'text-yellow-400'}`}>
+                  {task.status}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
 
     </div>
