@@ -32,24 +32,14 @@ export default function ChatInterface() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Left side - Dropdown menu */}
-      <div className="w-64 bg-gray-800 p-4">
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="w-full justify-start">
-              <Menu className="mr-2 h-4 w-4" />
-              <span>Menu</span>
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-56">
-            <DropdownMenuLabel>My Account</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Profile</DropdownMenuItem>
-            <DropdownMenuItem>Billing</DropdownMenuItem>
-            <DropdownMenuItem>Team</DropdownMenuItem>
-            <DropdownMenuItem>Subscription</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+      {/* Left side - History and Options buttons */}
+      <div className="w-16 bg-gray-200 p-4 flex flex-col items-center">
+        <Button variant="ghost" className="mb-4">
+          <Clock className="h-6 w-6" />
+        </Button>
+        <Button variant="ghost">
+          <Settings className="h-6 w-6" />
+        </Button>
       </div>
 
       {/* Center - Chat area */}
@@ -76,15 +66,26 @@ export default function ChatInterface() {
         </form>
       </div>
 
-      {/* Right side - History and Options buttons */}
-      <div className="w-16 bg-gray-200 p-4 flex flex-col items-center">
-        <Button variant="ghost" className="mb-4">
-          <Clock className="h-6 w-6" />
-        </Button>
-        <Button variant="ghost">
-          <Settings className="h-6 w-6" />
-        </Button>
+      {/* Right side - Dropdown menu + Task Panel*/}
+      <div className="w-64 bg-gray-800 p-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="w-full justify-start">
+              <Menu className="mr-2 h-4 w-4" />
+              <span>Menu</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem>Profile</DropdownMenuItem>
+            <DropdownMenuItem>Billing</DropdownMenuItem>
+            <DropdownMenuItem>Team</DropdownMenuItem>
+            <DropdownMenuItem>Subscription</DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
+
     </div>
   )
 }
