@@ -17,13 +17,13 @@ import {
 } from "@/components/ui/accordion"
 import { Menu, Send, Clock, Settings } from 'lucide-react'
 import { VNC_SERVER_URL_LIST } from './constants'
-import { Bot, Task } from './types'
+import { Option, Task } from './types'
 
 export default function ChatInterface() {
   const [input, setInput] = useState('')
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [activeBot, setActiveBot] = useState<Bot>(VNC_SERVER_URL_LIST[0])
-  const [iframeUrl, setIframeUrl] = useState<string>(activeBot.url)
+  const [activeOption, setActiveOption] = useState<Option>(VNC_SERVER_URL_LIST[0])
+  const [iframeUrl, setIframeUrl] = useState<string>(activeOption.url)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -31,8 +31,7 @@ export default function ChatInterface() {
       const task: Task = {
         command: input,
         status: "Pending",
-        bot: activeBot.name,
-        color: activeBot.color
+        bot: activeOption.name
       }
       // Hitting the API endpoint to execute the command
 
@@ -48,9 +47,9 @@ export default function ChatInterface() {
   }
 
   useEffect(() => {
-    setIframeUrl(activeBot.url);
-    console.log(activeBot);
-  }, [activeBot])
+    setIframeUrl(activeOption.url);
+    console.log(activeOption);
+  }, [activeOption])
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -98,13 +97,13 @@ export default function ChatInterface() {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-[318px]">
-            <DropdownMenuLabel>Bot View</DropdownMenuLabel>
+            <DropdownMenuLabel>Views</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {VNC_SERVER_URL_LIST.map((bot, index) => (
               <DropdownMenuItemWithActive
                 key={index}
-                onClick={() => setActiveBot(bot)}
-                className={`${bot === activeBot
+                onClick={() => setActiveOption(bot)}
+                className={`${bot === activeOption
                   ? 'bg-blue-600 text-white font-bold hover:bg-blue-400 hover:text-white'
                   : 'focus:bg-accent focus:text-accent-foreground'
                   } px-4 py-2 cursor-pointer`}
@@ -122,16 +121,13 @@ export default function ChatInterface() {
             {tasks.slice().reverse().map((task, index) => {
               return (
                 <AccordionItem value={task.command} key={index} className={`p-2 bg-gray-700 rounded text-nowrap cursor-default`}>
-                  <div className='flex justify-between items-center'>
+                  <div className='flex justify-between items-center gap-2'>
                     <AccordionTrigger className='h-6'>
                     </AccordionTrigger>
-                    <span className='w-[50%] overflow-hidden text-ellipsis text-nowrap'>
+                    <span className='overflow-hidden text-ellipsis text-nowrap w-full'>
                       {task.command}
                     </span>
                     <div className='flex gap-2 justify-center items-center'>
-                      <span className={`${task.color} text-white rounded-full px-[6px] py-[1px] text-sm`}>
-                        {task.bot}
-                      </span>
                       <span className={`font-semibold ${task.status === 'Completed' ? 'text-green-400' : task.status === 'Failed' ? 'text-red-400' : 'text-yellow-400'}`}>
                         {task.status}
                       </span>
@@ -150,7 +146,6 @@ export default function ChatInterface() {
           </Accordion>
         </div>
       </div>
-
     </div>
   )
 }
