@@ -1,8 +1,8 @@
 import { Option } from "./types";
 
-export const VNC_SERVER_URL:string = "http://localhost:8080/vnc.html";
+export const VNC_SERVER_URL: string = "http://localhost:8080/vnc.html";
 
-export const VNC_SERVER_URL_LIST:Option[] = [
+export const VNC_SERVER_URL_LIST: Option[] = [
     {
         name: "RVIZ",
         status: "Active",
