@@ -3,6 +3,8 @@ import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { ChatState } from "@/types";
 import { cn } from "@/lib/utils"
+import { groqChat } from "@/Groq";
+
 
 export const Chatbox = () => {
   const [inputText, setInputText] = useState("");
@@ -36,29 +38,23 @@ export const Chatbox = () => {
       })
       )
 
-      const userInput = inputText; // Preserve input before clearing
+      // const userInput = inputText; // Preserve input before clearing
       setInputText("");
 
-      // try {
-      //   const response = await fetch(
-      //     `http://localhost:8000/genAIchat/?input_text=${encodeURIComponent(
-      //       userInput
-      //     )}`
-      //   );
-      //   const data = await response.json();
-      //
-      //   // Add bot response to chat
-      //   dispatch(
-      //     addMessage({
-      //       id: (chats.length + 2).toString(),
-      //       from: "Bot",
-      //       message: data.result,
-      //       time: new Date().toLocaleString(),
-      //     })
-      //   );
-      // } catch (error) {
-      //   console.error("Error fetching bot response:", error);
-      // }
+      const response = await groqChat(inputText)
+
+      setChat((prevState) => ({
+        chats: [
+          ...prevState.chats,
+          {
+            id: (chat.chats.length + 2).toString(),
+            from: "Bot",
+            message: response,
+            time: new Date().toLocaleString(),
+          }
+        ]
+      })
+      )
     }
   };
 
