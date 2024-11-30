@@ -18,6 +18,7 @@ import {
 import { Menu, Send, Clock, Settings } from 'lucide-react'
 import { VNC_SERVER_URL_LIST } from './constants'
 import { Option, Task } from './types'
+import { Chatbox } from './components/Chatbox'
 
 export default function ChatInterface() {
   const [input, setInput] = useState('')
@@ -54,7 +55,7 @@ export default function ChatInterface() {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Right side - Dropdown menu + Task Panel*/}
-      <div className="w-[350px] bg-gray-800 p-4">
+      <div className="w-[200px] bg-gray-800 p-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full justify-start">
@@ -121,7 +122,7 @@ export default function ChatInterface() {
             className="w-full h-full p-4"
           />
         </div>
-        <form onSubmit={handleSubmit} className="p-4 border-t">
+        {/*}<form onSubmit={handleSubmit} className="p-4 border-t">
           <div className="flex">
             <Input
               type="text"
@@ -134,17 +135,12 @@ export default function ChatInterface() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-        </form>
+        </form>*/}
       </div>
 
       {/* Left side - History and Options buttons */}
-      <div className="w-16 bg-gray-200 p-4 flex flex-col items-center">
-        <Button variant="ghost" className="mb-4">
-          <Clock className="h-6 w-6" />
-        </Button>
-        <Button variant="ghost">
-          <Settings className="h-6 w-6" />
-        </Button>
+      <div className="w-[300px] bg-gray-200 p-4 flex flex-col items-center">
+        <Chatbox />
       </div>
     </div>
   )
