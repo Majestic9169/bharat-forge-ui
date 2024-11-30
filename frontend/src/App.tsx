@@ -14,10 +14,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Menu } from 'lucide-react'
+import { Menu, Send } from 'lucide-react'
 import { VNC_SERVER_URL_LIST } from './constants'
 import { Option, Task } from './types'
 import { Chatbox } from './components/Chatbox'
+import { Input } from './components/ui/input'
 
 export default function ChatInterface() {
   const [input, setInput] = useState('')
@@ -121,7 +122,7 @@ export default function ChatInterface() {
             className="w-full h-full p-4"
           />
         </div>
-        {/*}<form onSubmit={handleSubmit} className="p-4 border-t">
+        <form onSubmit={handleSubmit} className="p-4 border-t">
           <div className="flex">
             <Input
               type="text"
@@ -134,7 +135,7 @@ export default function ChatInterface() {
               <Send className="h-4 w-4" />
             </Button>
           </div>
-        </form>*/}
+        </form>
       </div>
 
       {/* Left side - History and Options buttons */}

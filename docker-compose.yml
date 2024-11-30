@@ -1,0 +1,18 @@
+services: 
+  ros: 
+    build: 
+      context: ./ros
+    ports:
+      - "5900:5900" #vnc server
+      - "8080:8080" #noVNC websocket thing
+    environment:
+      RVIZ: ":1"
+      MVSIM: ":2"
+    volumes:
+      - ./ros:/ros_ws
+
+  frontend:
+    build:
+      context: ./frontend
+    ports: 
+      - "5173:80"

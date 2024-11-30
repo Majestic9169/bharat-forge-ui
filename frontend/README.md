@@ -1,4 +1,3 @@
-
 <!-- Improved compatibility of back to top link: See: https://github.com/Majestic9169/bharat-forge-ui/pull/73 -->
 <a id="readme-top"></a>
 <!--
@@ -84,7 +83,7 @@ Unlike external environments, robots placed in indoor workplaces cannot rely on 
 However, the goal of development in this field is to achieve complete autonomy in 
 robot operations, without the need for human or environmental interaction.
 
-This the repo for the given problem statement
+This the frontend repo for the given problem statement
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -97,8 +96,6 @@ This the repo for the given problem statement
 * [![Tailwind CSS][TailwindCSS]][Tailwind-url]
 * [![TypeScript][TypeScript]][TypeScript-url]
 * [![ShadCN UI][ShadCN]][ShadCN-url]
-* [![ROS][ROS]][ROS-url]
-* [![Docker][Docker]][Docker-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -112,33 +109,44 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
-Just have docker installed and enabled
-
+This is an example of how to list things you need to use the software and how to install them.
+> **WARNING:** Make sure you have `pnpm` installed
+* Windows/Ubuntu (probably idk)
+  ```sh
+  npm install pnpm -g
+  pnpm --version
+  ```
 * Arch Linux
   ```sh
-  sudo pacman -S docker docker-compose
+  sudo pacman -S pnpm
+  pnpm --version
   ```
 
-* Windows
-  - Follow [this](https://docs.docker.com/desktop/setup/install/windows-install/)
-
-* Ubuntu (i'm not testing this out)
+> Setup the VNC Server
+* Arch/Hyprland
+  
+  First start the VNC server. Hyprland uses the Wayland protocol so we use `wayvnc`
   ```sh
-  sudo curl -L "https://github.com/docker/compose/releases/download/1.29.2/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-  sudo chmod +x /usr/local/bin/docker-compose
-  docker-compose --version
-  ``` 
+  wayvnc --output eDP-1 0.0.0.0 5900 -L debug trace
+  ```
+  Then use `novnc` to connect the server to a websocket
+  ```sh
+  sudo novnc --vnc localhost:5900 --listen 80
+  ```
+* Ubuntu
+  
+    set up `tigervnc` and then use `novnc` similar to above. Follow [this video](https://www.youtube.com/watch?v=fyY6ovGbTO4)
 
 ### Installation
 
 ```sh
 git clone https://github.com/Majestic9169/bharat-forge-ui.git
 cd bharat-forge-ui
-docker-compose up --build
+pnpm install
+pnpm run dev
 ```
 
-Your `docker-compose` command might be different, idk why that happens. You know how to 
-to use Docker on your machine
+make sure your VNC server is running and connected to a websocket
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -150,6 +158,24 @@ to use Docker on your machine
 <!-- Use this space to show useful examples of how a project can be used. Additional screenshots, code examples and demos work well in this space. You may also link to more resources. -->
 <!---->
 <!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+
+
+
+<!-- ROADMAP -->
+<!-- ## Roadmap -->
+<!---->
+<!-- - [x] Add Changelog -->
+<!-- - [x] Add back to top links -->
+<!-- - [ ] Add Additional Templates w/ Examples -->
+<!-- - [ ] Add "components" document to easily copy & paste sections of the readme -->
+<!-- - [ ] Multi-language Support -->
+<!--     - [ ] Chinese -->
+<!--     - [ ] Spanish -->
+<!---->
+<!-- See the [open issues](https://github.com/Majestic9169/bharat-forge-ui/issues) for a full list of proposed features (and known issues). -->
+<!---->
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+
 
 
 <!-- CONTRIBUTING -->
@@ -173,6 +199,16 @@ Don't forget to give the project a star! Thanks again!
 <!-- </a> -->
 <!---->
 <!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+
+
+<!-- LICENSE -->
+<!-- ## License -->
+<!---->
+<!-- Distributed under the MIT License. See `LICENSE.txt` for more information. -->
+<!---->
+<!-- <p align="right">(<a href="#readme-top">back to top</a>)</p> -->
+
+
 
 <!-- CONTACT -->
 <!-- ## Contact -->
@@ -217,7 +253,3 @@ Don't forget to give the project a star! Thanks again!
 [TypeScript-url]: https://www.typescriptlang.org/
 [ShadCN]: https://img.shields.io/badge/ShadCN%20UI-4A5568?style=for-the-badge&logo=react&logoColor=white
 [ShadCN-url]: https://ui.shadcn.com/
-[ROS]: https://img.shields.io/badge/ROS-22314E?style=for-the-badge&logo=ros&logoColor=white
-[ROS-url]: https://www.ros.org/
-[Docker]: https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white
-[Docker-url]: https://www.docker.com/
