@@ -53,40 +53,6 @@ export default function ChatInterface() {
 
   return (
     <div className="flex h-screen bg-gray-100">
-      {/* Left side - History and Options buttons */}
-      <div className="w-16 bg-gray-200 p-4 flex flex-col items-center">
-        <Button variant="ghost" className="mb-4">
-          <Clock className="h-6 w-6" />
-        </Button>
-        <Button variant="ghost">
-          <Settings className="h-6 w-6" />
-        </Button>
-      </div>
-
-      {/* Center - Chat area */}
-      <div className="flex-1 flex flex-col">
-        <div className="flex-1 overflow-auto p-4">
-          <iframe
-            src={iframeUrl}
-            className="w-full h-full p-4"
-          />
-        </div>
-        <form onSubmit={handleSubmit} className="p-4 border-t">
-          <div className="flex">
-            <Input
-              type="text"
-              placeholder="Type your message here..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-1 mr-2"
-            />
-            <Button type="submit">
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </form>
-      </div>
-
       {/* Right side - Dropdown menu + Task Panel*/}
       <div className="w-[350px] bg-gray-800 p-4">
         <DropdownMenu>
@@ -145,6 +111,40 @@ export default function ChatInterface() {
             })}
           </Accordion>
         </div>
+      </div>
+
+      {/* Center - Chat area */}
+      <div className="flex-1 flex flex-col">
+        <div className="flex-1 overflow-auto p-4">
+          <iframe
+            src={iframeUrl}
+            className="w-full h-full p-4"
+          />
+        </div>
+        <form onSubmit={handleSubmit} className="p-4 border-t">
+          <div className="flex">
+            <Input
+              type="text"
+              placeholder="Type your message here..."
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="flex-1 mr-2"
+            />
+            <Button type="submit">
+              <Send className="h-4 w-4" />
+            </Button>
+          </div>
+        </form>
+      </div>
+
+      {/* Left side - History and Options buttons */}
+      <div className="w-16 bg-gray-200 p-4 flex flex-col items-center">
+        <Button variant="ghost" className="mb-4">
+          <Clock className="h-6 w-6" />
+        </Button>
+        <Button variant="ghost">
+          <Settings className="h-6 w-6" />
+        </Button>
       </div>
     </div>
   )
