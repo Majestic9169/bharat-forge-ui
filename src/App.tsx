@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -15,7 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Menu, Send, Clock, Settings } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { VNC_SERVER_URL_LIST } from './constants'
 import { Option, Task } from './types'
 import { Chatbox } from './components/Chatbox'
@@ -55,7 +54,7 @@ export default function ChatInterface() {
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Right side - Dropdown menu + Task Panel*/}
-      <div className="w-[200px] bg-gray-800 p-4">
+      <div className="w-[250px] bg-gray-800 p-4">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full justify-start">
@@ -63,7 +62,7 @@ export default function ChatInterface() {
               <span className='text-lg'>Menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[318px]">
+          <DropdownMenuContent className="w-[218px]">
             <DropdownMenuLabel>Views</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {VNC_SERVER_URL_LIST.map((bot, index) => (
@@ -83,7 +82,7 @@ export default function ChatInterface() {
 
         {/* Command History Panel */}
         <div className="mt-4 text-white">
-          <h2 className="text-lg font-bold">Command History</h2>
+          <h2 className="text-lg font-semibold pl-2 pb-2 border-b-[1px] border-b-white">Command History</h2>
           <Accordion type='multiple' className="mt-2 space-y-2 relative">
             {tasks.slice().reverse().map((task, index) => {
               return (
@@ -139,7 +138,7 @@ export default function ChatInterface() {
       </div>
 
       {/* Left side - History and Options buttons */}
-      <div className="w-[300px] bg-gray-200 p-4 flex flex-col items-center">
+      <div className="w-[320px] bg-gray-200 p-4 flex flex-col items-center">
         <Chatbox />
       </div>
     </div>

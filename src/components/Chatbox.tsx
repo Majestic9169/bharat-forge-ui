@@ -2,20 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { ChatState } from "@/types";
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 import { groqChat } from "@/Groq";
-
 
 export const Chatbox = () => {
   const [inputText, setInputText] = useState("");
-  const [chat, setChat] = useState<ChatState>({
-    chats: []
-  });
-
-  // Reference for auto-scrolling
+  const [chat, setChat] = useState<ChatState>({ chats: [] });
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to bottom when chats update
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
@@ -24,88 +18,76 @@ export const Chatbox = () => {
 
   const handleInputSubmit = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputText.trim()) {
-      // Add user message to chat
       setChat((prevState) => ({
         chats: [
           ...prevState.chats,
-          {
-            id: (chat.chats.length + 1).toString(),
-            from: "User",
-            message: inputText,
-            time: new Date().toLocaleString(),
-          }
-        ]
-      })
-      )
-
-      // const userInput = inputText; // Preserve input before clearing
+          { id: `${chat.chats.length + 1}`, from: "User", message: inputText, time: new Date().toLocaleString() },
+        ],
+      }));
       setInputText("");
 
-      const response = await groqChat(inputText)
-
+      const response = await groqChat(inputText);
       setChat((prevState) => ({
         chats: [
           ...prevState.chats,
-          {
-            id: (chat.chats.length + 2).toString(),
-            from: "Bot",
-            message: response,
-            time: new Date().toLocaleString(),
-          }
-        ]
-      })
-      )
+          { id: `${chat.chats.length + 2}`, from: "Bot", message: response, time: new Date().toLocaleString() },
+        ],
+      }));
     }
   };
 
-
-
-
-
   return (
-    <ScrollArea className="h-full p-3 ">
-      <div
-        // ref={chatContainerRef}
-        className="flex flex-col overflow-y-auto"
-        style={{ maxHeight: "75vh" }}
-      >
-        <div className="flex mt-4 ">
-          <div className="w-full flex flex-col justify-around gap-4 ">
-            <div className="flex-col w-[100%] flex gap-2">
-              {chat.chats.map((chatmsg) => (
-                <div className="chatMessage" key={chatmsg.id}>
-                  <div
-                    style={{ maxWidth: "75%" }}
-                    className={cn(
-                      "py-4",
-                      "px-3",
-                      "rounded-xl",
-                      "inline-block",
-                      "w-max-[75%]",
-                      "bg-white",
-                      chatmsg.from === "Bot" ? "float-left" : "float-right",
-                      chatmsg.from === "Bot" ? "" : "bg-red-400 text-white"
-                    )}
-                  >
-                    {chatmsg.message}
-                  </div>
-                </div>
-              ))}
+    <div className="flex flex-col h-full bg-gray-50 border border-gray-300 rounded-lg shadow-md">
+      <div className="flex items-center justify-between p-3 bg-gray-200 border-b border-gray-300">
+        <h2 className="text-lg font-semibold text-gray-800">Chatbox</h2>
+      </div>
+      <ScrollArea className="flex-grow p-3">
+        <div
+          ref={chatContainerRef}
+          className="flex flex-col gap-3 overflow-y-auto modern-scrollbar pr-2"
+          style={{ maxHeight: "70vh" }}
+        >
+          {chat.chats.map((chatmsg) => (
+            <div
+              key={chatmsg.id}
+              className={cn(
+                "chatMessage flex",
+                chatmsg.from === "Bot" ? "justify-start" : "justify-end"
+              )}
+            >
+              <div
+                style={{
+                  maxWidth: "90%",
+                  overflowWrap: "break-word",
+                  wordWrap: "break-word",
+                  whiteSpace: "pre-wrap",
+                }}
+                className={cn(
+                  "py-3 px-4 rounded-lg",
+                  chatmsg.from === "Bot" ? "bg-blue-100 text-gray-800" : "bg-green-400 text-white"
+                )}
+              >
+                {chatmsg.message}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
+      </ScrollArea>
+      <div className="p-3 flex gap-2 items-center">
+        <Input
+          className="flex-grow rounded-full bg-gray-100 text-gray-800 pl-4 pr-4 py-2 shadow-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          placeholder="Type your message here..."
+          value={inputText}
+          onChange={(e) => setInputText(e.target.value)}
+          onKeyDown={handleInputSubmit}
+        />
+        <button
+          onClick={() => handleInputSubmit({ key: "Enter" } as React.KeyboardEvent<HTMLInputElement>)}
+          className="px-4 py-2 bg-blue-500 text-white rounded-full shadow hover:bg-blue-600"
+        >
+          Send
+        </button>
       </div>
-      <div className="flex-col w-full flex gap-2">
-        <div className="w-full">
-          <Input
-            className="mt-3 w-full mx-0 rounded-xl bg-white text-xl pl-1 pr-1 pt-2 pb-2 h-10"
-            placeholder="Go to the fire hydrant"
-            value={inputText}
-            onChange={(e) => setInputText(e.target.value)}
-            onKeyDown={handleInputSubmit}
-          />
-        </div>
-      </div>
-    </ScrollArea>
-  )
-}
+    </div>
+  );
+};
