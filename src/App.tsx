@@ -82,7 +82,6 @@ export default function ChatInterface() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-
         {/* Command History Panel */}
         <div className="mt-4 text-white">
           <h2 className="text-lg font-semibold pl-2 pb-2 border-b-[1px] border-b-white">Command History</h2>
