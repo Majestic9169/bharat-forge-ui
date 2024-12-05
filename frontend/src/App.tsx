@@ -19,6 +19,7 @@ import { VNC_SERVER_URL_LIST } from './constants'
 import { Option, Task } from './types'
 import { Chatbox } from './components/Chatbox'
 import { Input } from './components/ui/input'
+import { title } from 'process'
 
 export default function ChatInterface() {
   const [input, setInput] = useState('')
@@ -26,7 +27,7 @@ export default function ChatInterface() {
   const [activeOption, setActiveOption] = useState<Option>(VNC_SERVER_URL_LIST[0])
   const [iframeUrl, setIframeUrl] = useState<string>(activeOption.url)
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (input.trim()) {
       const task: Task = {
@@ -35,7 +36,22 @@ export default function ChatInterface() {
         bot: activeOption.name
       }
       // Hitting the API endpoint to execute the command
+      try {
+        const res = await fetch('http://localhost:5000/chatbot', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ user_input: task.command }),
+        });
 
+        console.log(JSON.stringify({ input: task.command }))
+
+        const data = await res.json();
+        console.log(data)
+      } catch (error) {
+        console.error('Error:', error);
+      }
       // Setting the status of the task
 
       // Adding the task to the tasks list
