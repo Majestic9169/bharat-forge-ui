@@ -7,6 +7,9 @@ import uuid
 
 tasks = {}
 
+
+# Simulate a long-running task
+
 def long_running_task(task_id, msg):
     """Simulates a long-running task that takes time"""
     try:
