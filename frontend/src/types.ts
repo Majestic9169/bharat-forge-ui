@@ -2,6 +2,7 @@ export interface Task {
   command: string;
   status: string;
   bot: string;
+  id: string;
 }
 
 export interface ChatMessage {

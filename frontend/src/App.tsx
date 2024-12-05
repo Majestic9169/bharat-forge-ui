@@ -25,11 +25,48 @@ import axios from './api/axios'
 
 export default function ChatInterface() {
   const [tasks, setTasks] = useState<Task[]>([]);
-  const [options, setOptions] = useState<DataStructure>(null)
+  const [options, setOptions] = useState<DataStructure>()
   const [activeOption, setActiveOption] = useState<Option>(VNC_SERVER_URL_LIST[0])
   const [iframeUrl, setIframeUrl] = useState<string>(activeOption.url)
   const [cmdopen, setCmdopen] = useState(false)
   const [inputText, setInputText] = useState("");
+
+  const [pendingTasks, setPendingTasks] = useState<Task[]>([]);
+
+  useEffect(()=>{
+    setPendingTasks(tasks.filter(task=>task.status === 'pending'))
+  },[tasks])
+
+  const pollTaskStatus = (taskId: string) => {
+    const interval = setInterval(async () => {
+      try {
+        const response = await axios.get(`/c/task/status/${taskId}`);
+        const task = response.data;
+
+        if (task.status === "completed" || task.status === "failed") {
+          setTasks((prevTasks) => {
+            const index = prevTasks.findIndex((t) => t.id === taskId);
+            if (index !== -1) {
+              prevTasks[index].status = task.status === "completed" ? "Completed" : "Failed";
+            }
+            return [...prevTasks];
+          });
+          clearInterval(interval);
+        }
+      } catch (error) {
+        console.error("Error fetching task status, ", error);
+        clearInterval(interval);
+      }
+    }, 2000);
+  };
+
+  useEffect(()=>{
+    if(pendingTasks.length > 0){
+      pendingTasks.forEach(async (task)=>{
+        pollTaskStatus(task.id);
+      })
+    }
+  },[pendingTasks])
 
   useEffect(() => {
     setIframeUrl(activeOption.url);
