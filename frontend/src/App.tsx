@@ -14,64 +14,44 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
-import { Menu, Send } from 'lucide-react'
+import { Menu } from 'lucide-react'
 import { VNC_SERVER_URL_LIST } from './constants'
-import { Option, Task } from './types'
+import { DataStructure, Option, Task } from './types'
 import { Chatbox } from './components/Chatbox'
-import { Input } from './components/ui/input'
-import { title } from 'process'
+import left_caret from './assets/prev_icon.svg'
+import right_caret from './assets/next_icon.svg'
+import Commands from './components/Commands'
+import axios from './api/axios'
 
 export default function ChatInterface() {
-  const [input, setInput] = useState('')
   const [tasks, setTasks] = useState<Task[]>([]);
+  const [options, setOptions] = useState<DataStructure>(null)
   const [activeOption, setActiveOption] = useState<Option>(VNC_SERVER_URL_LIST[0])
   const [iframeUrl, setIframeUrl] = useState<string>(activeOption.url)
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (input.trim()) {
-      const task: Task = {
-        command: input,
-        status: "Pending",
-        bot: activeOption.name
-      }
-      // Hitting the API endpoint to execute the command
-      try {
-        const res = await fetch('http://localhost:5000/chatbot', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ user_input: task.command }),
-        });
-
-        console.log(JSON.stringify({ input: task.command }))
-
-        const data = await res.json();
-        console.log(data)
-      } catch (error) {
-        console.error('Error:', error);
-      }
-      // Setting the status of the task
-
-      // Adding the task to the tasks list
-      setTasks((prevState) => ([
-        ...prevState,
-        task,
-      ]))
-      setInput('')
-    }
-  }
+  const [cmdopen, setCmdopen] = useState(false)
+  const [inputText, setInputText] = useState("");
 
   useEffect(() => {
     setIframeUrl(activeOption.url);
-    console.log(activeOption);
   }, [activeOption])
+
+  async function fetchTasks(){
+    const response = await axios.get('/tasks');
+    if(response.status === 200){
+      setOptions(response.data);
+    } else {
+      console.log('Error fetching tasks');
+    }
+  }
+
+  useEffect(()=>{
+    fetchTasks();
+  },[])
 
   return (
     <div className="flex h-screen bg-gray-100">
       {/* Right side - Dropdown menu + Task Panel*/}
-      <div className="w-[250px] bg-gray-800 p-4">
+      <div className={`w-[350px] bg-[rgba(31,41,55,0.97)] p-4 absolute left-0 top-0 bottom-0 shadow-2xl ${!cmdopen?"translate-x-[-350px]":""} duration-200`}>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="w-full justify-start">
@@ -79,7 +59,7 @@ export default function ChatInterface() {
               <span className='text-lg'>Menu</span>
             </Button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent className="w-[218px]">
+          <DropdownMenuContent className="w-[318px]">
             <DropdownMenuLabel>Views</DropdownMenuLabel>
             <DropdownMenuSeparator />
             {VNC_SERVER_URL_LIST.map((bot, index) => (
@@ -96,7 +76,6 @@ export default function ChatInterface() {
             ))}
           </DropdownMenuContent>
         </DropdownMenu>
-
         {/* Command History Panel */}
         <div className="mt-4 text-white">
           <h2 className="text-lg font-semibold pl-2 pb-2 border-b-[1px] border-b-white">Command History</h2>
@@ -116,17 +95,28 @@ export default function ChatInterface() {
                       </span>
                     </div>
                   </div>
-                  <AccordionContent className='p-2'>
+                  <AccordionContent className='p-2 h-max'>
                     <div className='text-wrap'>
                       {
                         task.command
                       }
+                    </div>
+                    <div className='w-full flex justify-start items-center py-2'>
+                      <span className='text-nowrap px-3 py-[1px] bg-orange-500 rounded-full'>BOT-{task.bot}</span>
                     </div>
                   </AccordionContent>
                 </AccordionItem>
               )
             })}
           </Accordion>
+        </div>
+        <div onClick={()=>{
+            setCmdopen(!cmdopen)
+          }} className='absolute top-0 right-0 translate-x-[100%] bg-[#617796] hover:bg-[#2f3b4b] duration-150 cursor-pointer text-white p-2 rounded-r-md shadow-2xl'>
+          <button className='py-1 w-[5px] h-[18px] flex justify-center items-center rounded-r-md'>
+            <img src={right_caret} alt='right_caret' className={`h-6 w-6 ${cmdopen?"hidden":"flex"}`} />
+            <img src={left_caret} alt='left_caret' className={`h-6 w-6 ${!cmdopen?"hidden":"flex"}`} />
+          </button>
         </div>
       </div>
 
@@ -135,28 +125,17 @@ export default function ChatInterface() {
         <div className="flex-1 overflow-auto p-4">
           <iframe
             src={iframeUrl}
-            className="w-full h-full p-4"
+            className="w-full h-full p-2"
           />
         </div>
-        <form onSubmit={handleSubmit} className="p-4 border-t">
-          <div className="flex">
-            <Input
-              type="text"
-              placeholder="Type your message here..."
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              className="flex-1 mr-2"
-            />
-            <Button type="submit">
-              <Send className="h-4 w-4" />
-            </Button>
-          </div>
-        </form>
       </div>
 
       {/* Left side - History and Options buttons */}
-      <div className="w-[320px] bg-gray-200 p-4 flex flex-col items-center">
-        <Chatbox />
+      <div className="w-[320px] bg-gray-200 p-4 flex flex-col items-center gap-2">
+        <div className='flex flex-col h-[40%] w-full bg-gray-50 border border-gray-300 rounded-lg shadow-md'>
+          <Commands setInputText={setInputText} data={options}/>
+        </div>
+        <Chatbox inputText={inputText} setInputText={setInputText} setTasks={setTasks}/>
       </div>
     </div>
   )

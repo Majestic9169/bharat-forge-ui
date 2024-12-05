@@ -1,12 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "@/components/ui/input";
-import { ChatState } from "@/types";
+import { ChatState, Task } from "@/types";
 import { cn } from "@/lib/utils";
-import { groqChat } from "@/Groq";
+import axios from "@/api/axios";
 
-export const Chatbox = () => {
-  const [inputText, setInputText] = useState("");
+interface ChatboxProps {
+  setTasks: React.Dispatch<React.SetStateAction<Task[]>>;
+  inputText: string;
+  setInputText: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export const Chatbox = ({setTasks, inputText, setInputText}:ChatboxProps) => {
   const [chat, setChat] = useState<ChatState>({ chats: [] });
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -15,6 +20,21 @@ export const Chatbox = () => {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
   }, [chat]);
+
+  async function sendChat(chatmsg: string) {
+    const response = await axios.post("/c/task", { command: chatmsg });
+    if (response.status === 200) {
+      response.data.error = false;
+      return response.data;
+    } else {
+      console.log("Error sending chat message");
+      return {message:"Error sending chat message", bot_assigned:"", error:true, status: "failed"};
+    }
+  }
+
+  const appendTask = (task: Task) => {
+    setTasks((prevState) => [...prevState, task]);
+  }
 
   const handleInputSubmit = async (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter" && inputText.trim()) {
@@ -26,13 +46,30 @@ export const Chatbox = () => {
       }));
       setInputText("");
 
-      const response = await groqChat(inputText);
+      const response = await sendChat(inputText);
+
+      if(response.error){
+        const reply = response.message;
+        setChat((prevState) => ({
+          chats: [
+            ...prevState.chats,
+            { id: `${chat.chats.length + 2}`, from: "Bot", message: reply, time: new Date().toLocaleString() },
+          ],
+        }));
+        const failed_task = {id: response.task_id, status: "failed", command: inputText, bot: response.bot_assigned};
+        appendTask(failed_task);
+        return;
+      }
+
+      const reply = response.message+" and assigned to BOT : "+response.bot_assigned;
       setChat((prevState) => ({
         chats: [
           ...prevState.chats,
-          { id: `${chat.chats.length + 2}`, from: "Bot", message: response, time: new Date().toLocaleString() },
+          { id: `${chat.chats.length + 2}`, from: "Bot", message: reply, time: new Date().toLocaleString() },
         ],
       }));
+      const new_task = {id: response.task_id, status: response.status, command: inputText, bot: response.bot_assigned};
+      appendTask(new_task);
     }
   };
 

@@ -4,12 +4,6 @@ export interface Task {
   bot: string;
 }
 
-export interface Option {
-  name: string;
-  status: string;
-  url: string;
-}
-
 export interface ChatMessage {
   id: string;
   from: "Bot" | "User";
@@ -32,3 +26,26 @@ export const initialChatState: ChatState = {
   ],
 };
 
+export interface Option {
+  name: string;
+  url: string;
+  status: string;
+}
+
+
+interface Coordinate {
+  x: number;
+  y: number;
+  z: number;
+}
+
+export interface DataStructure {
+  shelf: Coordinate[];
+  pallet_jack: Coordinate[];
+  my_ramp: Coordinate[];
+  my_bump: Coordinate[];
+  stairs: Coordinate[];
+  tote: Coordinate[];
+  pallet: Coordinate[];
+  chair_x3: Coordinate[];
+}
